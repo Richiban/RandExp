@@ -22,5 +22,6 @@ type Term =
     | CharSet of char array
     | SpecialChar of SpecialChar
     | Mod of Term * Mod
+    | Group of Term array
 
 type RandomSchema = Term list

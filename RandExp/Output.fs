@@ -41,6 +41,7 @@ let rec executeTerm =
     | CharSet cs -> randomFrom cs |> string
     | SpecialChar cx -> executeSpecialChar cx |> string
     | Mod (a, b) -> executeMod a b
+    | Group terms -> String.concat "" (terms |> Seq.map executeTerm)
 
 and executeMod (term: Term) =
     function

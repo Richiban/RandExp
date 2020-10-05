@@ -6,12 +6,15 @@ open FParsec
 open Richiban.RandExp.Parsing
 open Richiban.RandExp.Output
 
-let input = "[Ww]ub\w{3,20}\d\W..."
+[<EntryPoint>]
+let main args =
+    let input = args.[0]
+    printfn "Running on input '%s'" input
 
-printfn "Running on input '%s'" input
+    match parse input with
+    | Result.Ok schema ->
+        schema |> Seq.iter (printfn "%O")
+        printfn "%s" (execute schema)
+    | Result.Error err -> printfn "%O" err
 
-match parse input with
-| Result.Ok schema ->
-    schema |> Seq.iter (printfn "%O")
-    printfn "%s" (execute schema)
-| Result.Error err -> printfn "%O" err
+    0
