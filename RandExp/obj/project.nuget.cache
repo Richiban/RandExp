@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "kurk3lXuh+T1e7Zqqyl7tAXHvB7hkCY8EzytXM0ZX1xqgEHoIqhbz6a/wy+Ml480fU8V9qTQ6dUTTtKY4AozZA==",
+  "success": true,
+  "projectFilePath": "C:\\Source\\Richiban\\RandExp\\RandExp\\RandExp.fsproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\richard.gibson\\.nuget\\packages\\fparsec\\1.1.1\\fparsec.1.1.1.nupkg.sha512",
+    "C:\\Users\\richard.gibson\\.nuget\\packages\\fsharp.core\\4.7.1\\fsharp.core.4.7.1.nupkg.sha512"
+  ],
+  "logs": []
+}

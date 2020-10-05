@@ -1,6 +1,6 @@
 module Richiban.RandExp.Domain
 
-type CountData = 
+type CountData =
     | ExactCount of int
     | MinCount of int
     | MaxCount of int
@@ -15,13 +15,12 @@ type SpecialChar =
     | AnyDigit
     | AnyNonDigit
 
-type Mod =
-    | Count of CountData
+type Mod = Count of CountData
 
 type Term =
     | CharLiteral of char
-    | CharSet of char list
+    | CharSet of char array
     | SpecialChar of SpecialChar
     | Mod of Term * Mod
 
-type RandomSchema = { Statements: Term list }
+type RandomSchema = Term list
