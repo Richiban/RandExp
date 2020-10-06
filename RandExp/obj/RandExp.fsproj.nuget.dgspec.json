@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Source\\Richiban\\RandExp\\RandExp\\RandExp.fsproj": {}
+    "c:\\Source\\Richiban\\RandExp\\RandExp\\RandExp.fsproj": {}
   },
   "projects": {
-    "C:\\Source\\Richiban\\RandExp\\RandExp\\RandExp.fsproj": {
+    "c:\\Source\\Richiban\\RandExp\\RandExp\\RandExp.fsproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Source\\Richiban\\RandExp\\RandExp\\RandExp.fsproj",
+        "projectUniqueName": "c:\\Source\\Richiban\\RandExp\\RandExp\\RandExp.fsproj",
         "projectName": "RandExp",
-        "projectPath": "C:\\Source\\Richiban\\RandExp\\RandExp\\RandExp.fsproj",
+        "projectPath": "c:\\Source\\Richiban\\RandExp\\RandExp\\RandExp.fsproj",
         "packagesPath": "C:\\Users\\richard.gibson\\.nuget\\packages\\",
-        "outputPath": "C:\\Source\\Richiban\\RandExp\\RandExp\\obj\\",
+        "outputPath": "c:\\Source\\Richiban\\RandExp\\RandExp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

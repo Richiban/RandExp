@@ -1,2 +1,11 @@
 # RandExp
-An experiment: Learning to use FParsec by writing a little programming language. Based on the video at https://www.jetbrains.com/dotnet/guide/tutorials/dotnet-days-online-2020/learning-f-by-designing-your-own-language/
+
+A library for generating random strings from a Regex.
+
+## Examples:
+
+```
+dotnet run -- "[Hh]ello...\w+\d{3,5}"
+
+Helloq(@tXAQUQk25950
+```
