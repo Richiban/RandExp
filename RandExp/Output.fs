@@ -40,23 +40,23 @@ let rec executeTerm =
     | CharLiteral c -> string c
     | CharSet cs -> randomFrom cs |> string
     | SpecialChar cx -> executeSpecialChar cx |> string
-    | Mod (a, b) -> executeMod a b
+    | Count (a, b) -> executeMod a b
     | Group terms -> String.concat "" (terms |> Seq.map executeTerm)
 
 and executeMod (term: Term) =
     function
-    | Count (ExactCount i) ->
+    | ExactCount i ->
         Seq.init i (fun _ -> executeTerm term)
         |> String.concat ""
-    | Count (MinCount m) ->
+    | MinCount m ->
         let i = random.Next(m, m + 10)
         Seq.init i (fun _ -> executeTerm term)
         |> String.concat ""
-    | Count (MaxCount m) ->
+    | MaxCount m ->
         let i = random.Next(0, m)
         Seq.init i (fun _ -> executeTerm term)
         |> String.concat ""
-    | Count (RangeCount (a, b)) ->
+    | RangeCount (a, b) ->
         let i = random.Next(a, b + 1)
         Seq.init i (fun _ -> executeTerm term)
         |> String.concat ""

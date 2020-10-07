@@ -68,16 +68,15 @@ let parseCount =
             (choice [ attempt (skipChar ',' >>. pint32 |>> MaxCount)
                       attempt (pint32 .>> skipChar ',' .>>. pint32 |>> RangeCount)
                       attempt (pint32 .>> skipChar ',' |>> MinCount)
-                      (pint32 |>> ExactCount) ]
-             |>> Count)
+                      (pint32 |>> ExactCount) ])
 
     let countForms =
         choice [ parseBetweenBraces
-                 skipChar '*' >>% (MinCount 0 |> Count)
-                 skipChar '+' >>% (MinCount 1 |> Count)
-                 skipChar '?' >>% (RangeCount(0, 1) |> Count) ]
+                 skipChar '*' >>% (MinCount 0)
+                 skipChar '+' >>% (MinCount 1)
+                 skipChar '?' >>% (RangeCount(0, 1)) ]
 
-    parseTerm .>>. countForms |>> Mod
+    parseTerm .>>. countForms |>> Count
 
 let parseSpec =
     ((attempt parseCount) <|> parseTerm) |> many
