@@ -4,9 +4,6 @@ open Richiban.RandExp.Domain
 open FParsec.CharParsers
 open FParsec
 
-/// K-combinator. A function that takes a value and turns it into a function that returns that value
-let k v _ = v
-
 /// For debugging
 let (<!>) (p: Parser<_, _>) label: Parser<_, _> =
     fun stream ->
@@ -16,31 +13,31 @@ let (<!>) (p: Parser<_, _>) label: Parser<_, _> =
         reply
 
 let parseSpecialChar: Parser<Term, unit> =
-    choice [ skipChar '.' |>> k AnyChar
-             skipString "\\s" |>> k AnyWhitespaceChar
-             skipString "\\S" |>> k AnyNonWhitespaceChar
-             skipString "\\w" |>> k AnyWordChar
-             skipString "\\W" |>> k AnyNonWordChar
-             skipString "\\d" |>> k AnyDigit
-             skipString "\\D" |>> k AnyNonDigit ]
+    choice [ skipChar '.' >>% AnyChar
+             skipString "\\s" >>% AnyWhitespaceChar
+             skipString "\\S" >>% AnyNonWhitespaceChar
+             skipString "\\w" >>% AnyWordChar
+             skipString "\\W" >>% AnyNonWordChar
+             skipString "\\d" >>% AnyDigit
+             skipString "\\D" >>% AnyNonDigit ]
     |>> SpecialChar
 
 let charDef =
     choice [ letter
              digit
              pchar ' '
-             skipString "\\." |>> k '.'
-             skipString "\\^" |>> k '^'
-             skipString "\\$" |>> k '$'
-             skipString "\\*" |>> k '*'
-             skipString "\\+" |>> k '+'
-             skipString "\\?" |>> k '?'
-             skipString "\\(" |>> k '('
-             skipString "\\)" |>> k ')'
-             skipString "\\[" |>> k '['
-             skipString "\\{" |>> k '{'
-             skipString "\\\\" |>> k '\\'
-             skipString "\\|" |>> k '|' ]
+             skipString "\\." >>% '.'
+             skipString "\\^" >>% '^'
+             skipString "\\$" >>% '$'
+             skipString "\\*" >>% '*'
+             skipString "\\+" >>% '+'
+             skipString "\\?" >>% '?'
+             skipString "\\(" >>% '('
+             skipString "\\)" >>% ')'
+             skipString "\\[" >>% '['
+             skipString "\\{" >>% '{'
+             skipString "\\\\" >>% '\\'
+             skipString "\\|" >>% '|' ]
 
 let parseCharLiteral = charDef |>> CharLiteral
 
