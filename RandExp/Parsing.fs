@@ -76,8 +76,9 @@ let parseCount =
 
     let countForms =
         choice [ parseBetweenBraces
-                 skipChar '*' |>> (fun () -> MinCount 0 |> Count)
-                 skipChar '+' |>> (fun () -> MinCount 1 |> Count) ]
+                 skipChar '*' >>% (MinCount 0 |> Count)
+                 skipChar '+' >>% (MinCount 1 |> Count)
+                 skipChar '?' >>% (RangeCount(0, 1) |> Count) ]
 
     parseTerm .>>. countForms |>> Mod
 
