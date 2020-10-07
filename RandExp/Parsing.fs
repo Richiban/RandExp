@@ -4,7 +4,7 @@ open Richiban.RandExp.Domain
 open FParsec.CharParsers
 open FParsec
 
-/// K-combinator
+/// K-combinator. A function that takes a value and turns it into a function that returns that value
 let k v _ = v
 
 /// For debugging
@@ -25,7 +25,22 @@ let parseSpecialChar: Parser<Term, unit> =
              skipString "\\D" |>> k AnyNonDigit ]
     |>> SpecialChar
 
-let charDef = choice [ letter; digit; pchar ' ' ]
+let charDef =
+    choice [ letter
+             digit
+             pchar ' '
+             skipString "\\." |>> k '.'
+             skipString "\\^" |>> k '^'
+             skipString "\\$" |>> k '$'
+             skipString "\\*" |>> k '*'
+             skipString "\\+" |>> k '+'
+             skipString "\\?" |>> k '?'
+             skipString "\\(" |>> k '('
+             skipString "\\)" |>> k ')'
+             skipString "\\[" |>> k '['
+             skipString "\\{" |>> k '{'
+             skipString "\\\\" |>> k '\\'
+             skipString "\\|" |>> k '|' ]
 
 let parseCharLiteral = charDef |>> CharLiteral
 
@@ -64,7 +79,7 @@ let parseCount =
                  skipChar '*' |>> (fun () -> MinCount 0 |> Count)
                  skipChar '+' |>> (fun () -> MinCount 1 |> Count) ]
 
-    parseTerm .>>. countForms |>> Mod <!> "parseCount"
+    parseTerm .>>. countForms |>> Mod
 
 let parseSpec =
     ((attempt parseCount) <|> parseTerm) |> many
