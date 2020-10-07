@@ -4,9 +4,18 @@ open Richiban.RandExp.Domain
 open FParsec.CharParsers
 open FParsec
 
+/// K-combinator
 let k v _ = v
 
-let specialChar: Parser<Term, unit> =
+/// For debugging
+let (<!>) (p: Parser<_, _>) label: Parser<_, _> =
+    fun stream ->
+        printfn "%A: Entering %s" stream.Position label
+        let reply = p stream
+        printfn "%A: Leaving %s (%A)" stream.Position label reply.Status
+        reply
+
+let parseSpecialChar: Parser<Term, unit> =
     choice [ skipChar '.' |>> k AnyChar
              skipString "\\s" |>> k AnyWhitespaceChar
              skipString "\\S" |>> k AnyNonWhitespaceChar
@@ -16,21 +25,23 @@ let specialChar: Parser<Term, unit> =
              skipString "\\D" |>> k AnyNonDigit ]
     |>> SpecialChar
 
-let parseChar = (letter <|> digit) |>> CharLiteral
+let charDef = choice [ letter; digit; pchar ' ' ]
+
+let parseCharLiteral = charDef |>> CharLiteral
 
 let private betweenChars opn close = between (skipChar opn) (skipChar close)
 
 let parseCharSet =
-    betweenChars '[' ']' (many1 (letter <|> digit))
+    betweenChars '[' ']' (many1 charDef)
     |>> (Array.ofList >> CharSet)
 
 #nowarn "40"
 
 let rec parseTerm =
     parse.Delay(fun () ->
-        choice [ parseChar
+        choice [ parseCharLiteral
                  parseCharSet
-                 specialChar
+                 parseSpecialChar
                  parseGroup ])
 
 and parseGroup =
@@ -45,7 +56,7 @@ let parseCount =
             (choice [ attempt (skipChar ',' >>. pint32 |>> MaxCount)
                       attempt (pint32 .>> skipChar ',' .>>. pint32 |>> RangeCount)
                       attempt (pint32 .>> skipChar ',' |>> MinCount)
-                      (pint32 .>> skipChar '}' |>> ExactCount) ]
+                      (pint32 |>> ExactCount) ]
              |>> Count)
 
     let countForms =
@@ -53,7 +64,7 @@ let parseCount =
                  skipChar '*' |>> (fun () -> MinCount 0 |> Count)
                  skipChar '+' |>> (fun () -> MinCount 1 |> Count) ]
 
-    parseTerm .>>. countForms |>> Mod
+    parseTerm .>>. countForms |>> Mod <!> "parseCount"
 
 let parseSpec =
     ((attempt parseCount) <|> parseTerm) |> many
