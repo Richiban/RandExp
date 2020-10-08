@@ -57,10 +57,10 @@ let rec parseTerm =
                  parseGroup ])
 
 and parseGroup =
-    betweenChars '(' ')' (many1 parseTerm)
+    betweenChars '(' ')' (many1 parseCountableTerm)
     |>> (Array.ofList >> Group)
 
-let parseCount =
+and parseCount =
     let parseBetweenBraces =
         betweenChars
             '{'
@@ -78,8 +78,9 @@ let parseCount =
 
     parseTerm .>>. countForms |>> Count
 
-let parseSpec =
-    ((attempt parseCount) <|> parseTerm) |> many
+and parseCountableTerm = ((attempt parseCount) <|> parseTerm)
+
+let parseSpec = many parseCountableTerm
 
 let parseSpecFull = spaces >>. parseSpec .>> spaces .>> eof
 

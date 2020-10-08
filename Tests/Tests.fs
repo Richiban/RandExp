@@ -45,7 +45,13 @@ let ``Basic char with group (a)`` () =
 
 [<Fact>]
 let ``IPv4 address`` () =
-    expectSuccess "(\d{1,3}\.){3}(\d{1,3})" [ Group [| CharLiteral 'a' |] ]
+    expectSuccess
+        "(\d{1,3}\.){3}(\d{1,3})"
+        [ Count
+            (Group [| Count(SpecialChar AnyDigit, RangeCount(1, 3))
+                      CharLiteral '.' |],
+             ExactCount 3)
+          Group [| Count(SpecialChar AnyDigit, RangeCount(1, 3)) |] ]
 
 [<Fact>]
 let ``Wub wub wub`` () =
