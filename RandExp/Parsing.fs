@@ -49,7 +49,7 @@ let parseCharSet =
 
 #nowarn "40"
 
-let rec parseTerm =
+let rec parseElement =
     parse.Delay(fun () ->
         choice [ parseCharLiteral
                  parseCharSet
@@ -57,7 +57,7 @@ let rec parseTerm =
                  parseGroup ])
 
 and parseGroup =
-    betweenChars '(' ')' (many1 parseCountableTerm)
+    betweenChars '(' ')' (many1 parseTerm)
     |>> (Array.ofList >> Group)
 
 and parseCount =
@@ -70,17 +70,20 @@ and parseCount =
                       attempt (pint32 .>> skipChar ',' |>> MinCount)
                       (pint32 |>> ExactCount) ])
 
-    let countForms =
-        choice [ parseBetweenBraces
-                 skipChar '*' >>% (MinCount 0)
-                 skipChar '+' >>% (MinCount 1)
-                 skipChar '?' >>% (RangeCount(0, 1)) ]
+    choice [ parseBetweenBraces
+             skipChar '*' >>% (MinCount 0)
+             skipChar '+' >>% (MinCount 1)
+             skipChar '?' >>% (RangeCount(0, 1)) ]
 
-    parseTerm .>>. countForms |>> Count
+and parseTerm =
+    parseElement
+    .>>. opt parseCount
+    |>> function
+    | element, None -> element
+    | term, Some count -> Count(term, count)
 
-and parseCountableTerm = ((attempt parseCount) <|> parseTerm)
-
-let parseSpec = many parseCountableTerm
+let parseTerms = many parseCount .>> eof
+let parseSpec = many parseTerm
 
 let parseSpecFull = spaces >>. parseSpec .>> spaces .>> eof
 
