@@ -2,7 +2,7 @@
 
 A library for generating random strings from a Regex.
 
-## Examples:
+## Examples
 
 ```
 dotnet run -- "[Hh]ello...\w+\d{3,5}"
