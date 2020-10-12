@@ -49,11 +49,17 @@ let parseCharSet =
 
     let parseSingle = charDef |>> SingleItem
 
-    attempt
-        (between (skipString "[^") (skipChar ']') (many1 (parseRange <|> parseSingle))
-         |>> (Array.ofList >> NegativeCharSet))
-    <|> (betweenChars '[' ']' (many1 (parseRange <|> parseSingle))
-         |>> (Array.ofList >> RSet))
+    let parseContents = many1 (parseRange <|> parseSingle)
+
+    let parseNegatedSet =
+        between (skipString "[^") (skipChar ']') parseContents
+        |>> (Array.ofList >> NegativeCharSet)
+
+    let parseRegularSet =
+        betweenChars '[' ']' parseContents
+        |>> (Array.ofList >> RSet)
+
+    attempt parseNegatedSet <|> parseRegularSet
 
 #nowarn "40"
 
