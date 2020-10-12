@@ -26,5 +26,6 @@ type Term =
     | SpecialChar of SpecialChar
     | Count of Term * Count
     | Group of Term array
+    | Union of Term array * Term array
 
 type RandomSchema = Term list

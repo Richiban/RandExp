@@ -1,4 +1,4 @@
-module Tests
+module Richiban.RandExp.ParsingTests
 
 open System
 open Xunit
@@ -100,6 +100,18 @@ let ``CharRange: [^a-zA-Z]`` () =
         "[^a-zA-Z]"
         [ NegativeCharSet [| Range('a', 'z')
                              Range('A', 'Z') |] ]
+
+[<Fact>]
+let ``Union: a|b|c`` () =
+    expectSuccess "a|b|c" [ Union([| Union([| CharLiteral 'a' |], [| CharLiteral 'b' |]) |], [| CharLiteral 'c' |]) ]
+
+[<Fact>]
+let ``Union: aa|bb|cc`` () =
+    expectSuccess
+        "aa|bb|cc"
+        [ Union
+            ([| Union([| CharLiteral 'a'; CharLiteral 'a' |], [| CharLiteral 'b'; CharLiteral 'b' |]) |],
+             [| CharLiteral 'c'; CharLiteral 'c' |]) ]
 
 [<Fact>]
 let ``IPv4 address`` () =

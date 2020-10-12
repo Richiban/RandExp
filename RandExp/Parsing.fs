@@ -99,7 +99,19 @@ and parseTerm =
 let parseTerms = many parseCount .>> eof
 let parseSpec = many parseTerm
 
-let parseSpecFull = spaces >>. parseSpec .>> spaces .>> eof
+let operators = OperatorPrecedenceParser<_, _, unit>()
+
+operators.TermParser <- parseSpec
+
+operators.AddOperator
+<| InfixOperator<Term list, _, unit>
+    ("|", skipMany (skipChar ' '), 1, Associativity.Left, (fun x y -> [ Union(Array.ofList x, Array.ofList y) ]))
+
+let parseSpecFull =
+    spaces
+    >>. operators.ExpressionParser
+    .>> spaces
+    .>> eof
 
 let parse input =
     match run parseSpecFull input with
