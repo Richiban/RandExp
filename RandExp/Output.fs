@@ -54,13 +54,17 @@ let rec executeTerm =
         |> String.concat ""
     | SpecialChar cx -> executeSpecialChar cx |> string
     | Count (a, b) -> executeMod a b
-    | Group terms -> terms |> Seq.map executeTerm |> String.concat ""
+    | Group terms -> terms |> executeAll
     | RSet items ->
         items
         |> Seq.map (function
             | Range (a, b) -> { a .. b } |> Seq.map string |> String.concat ""
             | SingleItem c -> string c)
         |> String.concat ""
+    | Union (left, right) -> randomFrom [| left; right |] |> executeAll
+
+and executeAll (terms: Term seq) =
+    terms |> Seq.map executeTerm |> String.concat ""
 
 and executeMod (term: Term) =
     function
