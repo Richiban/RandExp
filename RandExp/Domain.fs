@@ -15,9 +15,14 @@ type SpecialChar =
     | AnyDigit
     | AnyNonDigit
 
+type SetItems =
+    | SingleItem of char
+    | Range of char * char
+
 type Term =
     | CharLiteral of char
-    | CharSet of char array
+    | NegativeCharSet of SetItems array
+    | RSet of SetItems array
     | SpecialChar of SpecialChar
     | Count of Term * Count
     | Group of Term array

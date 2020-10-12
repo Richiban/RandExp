@@ -44,8 +44,16 @@ let parseCharLiteral = charDef |>> CharLiteral
 let private betweenChars opn close = between (skipChar opn) (skipChar close)
 
 let parseCharSet =
-    betweenChars '[' ']' (many1 charDef)
-    |>> (Array.ofList >> CharSet)
+    let parseRange =
+        attempt (charDef .>> skipChar '-' .>>. charDef |>> Range)
+
+    let parseSingle = charDef |>> SingleItem
+
+    attempt
+        (between (skipString "[^") (skipChar ']') (many1 (parseRange <|> parseSingle))
+         |>> (Array.ofList >> NegativeCharSet))
+    <|> (betweenChars '[' ']' (many1 (parseRange <|> parseSingle))
+         |>> (Array.ofList >> RSet))
 
 #nowarn "40"
 
@@ -80,7 +88,7 @@ and parseTerm =
     .>>. opt parseCount
     |>> function
     | element, None -> element
-    | term, Some count -> Count(term, count)
+    | element, Some count -> Count(element, count)
 
 let parseTerms = many parseCount .>> eof
 let parseSpec = many parseTerm

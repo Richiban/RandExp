@@ -38,10 +38,29 @@ let executeSpecialChar =
 let rec executeTerm =
     function
     | CharLiteral c -> string c
-    | CharSet cs -> randomFrom cs |> string
+    | NegativeCharSet items ->
+        items
+        |> Seq.map (function
+            | Range (a, b) ->
+                allChars
+                |> Array.except { a .. b }
+                |> randomFrom
+                |> string
+            | SingleItem c ->
+                allChars
+                |> Array.except [ c ]
+                |> randomFrom
+                |> string)
+        |> String.concat ""
     | SpecialChar cx -> executeSpecialChar cx |> string
     | Count (a, b) -> executeMod a b
-    | Group terms -> String.concat "" (terms |> Seq.map executeTerm)
+    | Group terms -> terms |> Seq.map executeTerm |> String.concat ""
+    | RSet items ->
+        items
+        |> Seq.map (function
+            | Range (a, b) -> { a .. b } |> Seq.map string |> String.concat ""
+            | SingleItem c -> string c)
+        |> String.concat ""
 
 and executeMod (term: Term) =
     function
