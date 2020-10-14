@@ -61,7 +61,26 @@ let rec executeTerm =
             | Range (a, b) -> { a .. b } |> Seq.map string |> String.concat ""
             | SingleItem c -> string c)
         |> String.concat ""
-    | Union (left, right) -> randomFrom [| left; right |] |> executeAll
+    | Union (left, right) as u ->
+        let rec flatten terms =
+            seq {
+                match terms with
+                | [| Union (left, right) |] ->
+                    yield! flatten left
+                    yield! flatten right
+                | x -> x
+            }
+
+        let ts =
+            Array.concat [| flatten left |> Array.ofSeq
+                            flatten right |> Array.ofSeq |]
+
+        printfn "---"
+        printfn "%A" ts.Length
+        printfn "%A" ts
+        printfn "---"
+
+        randomFrom ts |> executeAll
 
 and executeAll (terms: Term seq) =
     terms |> Seq.map executeTerm |> String.concat ""
