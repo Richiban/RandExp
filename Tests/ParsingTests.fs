@@ -114,17 +114,7 @@ let ``Union: aa|bb|cc`` () =
              [| CharLiteral 'c'; CharLiteral 'c' |]) ]
 
 [<Fact>]
-let ``IPv4 address`` () =
-    expectSuccess
-        "(\d{1,3}\.){3}(\d{1,3})"
-        [ Count
-            (Group [| Count(SpecialChar AnyDigit, RangeCount(1, 3))
-                      CharLiteral '.' |],
-             ExactCount 3)
-          Group [| Count(SpecialChar AnyDigit, RangeCount(1, 3)) |] ]
-
-[<Fact>]
-let ``Wub wub wub`` () =
+let ``Mixture of group, set and count`` () =
     expectSuccess
         "([Ww]ub){3}"
         [ Count
@@ -133,3 +123,23 @@ let ``Wub wub wub`` () =
                       CharLiteral 'u'
                       CharLiteral 'b' |],
              ExactCount 3) ]
+
+[<Fact>]
+let ``Mixture of groups and union`` () =
+    expectSuccess
+        "(hi|bye)"
+        [ Group [| Union
+                       ([| CharLiteral 'h'; CharLiteral 'i' |],
+                        [| CharLiteral 'b'
+                           CharLiteral 'y'
+                           CharLiteral 'e' |]) |] ]
+
+[<Fact>]
+let ``IPv4 address`` () =
+    expectSuccess
+        "(\d{1,3}\.){3}(\d{1,3})"
+        [ Count
+            (Group [| Count(SpecialChar AnyDigit, RangeCount(1, 3))
+                      CharLiteral '.' |],
+             ExactCount 3)
+          Group [| Count(SpecialChar AnyDigit, RangeCount(1, 3)) |] ]
