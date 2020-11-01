@@ -17,6 +17,12 @@ steps:
   inputs:
     runtime: 'core'
     updateAssemblyInfo: true
+    
+- task: UseDotNet@2
+  displayName: "Install .NET 5"
+  inputs:
+    version: '5.0.x'
+    includePreviewVersions: true # Required for preview versions
 
 - task: DotNetCoreCLI@2
   displayName: "DotNet restore"
