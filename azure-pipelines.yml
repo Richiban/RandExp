@@ -17,7 +17,7 @@ steps:
   inputs:
     runtime: 'core'
     updateAssemblyInfo: true
-    
+
 - task: UseDotNet@2
   displayName: "Install .NET 5"
   inputs:
@@ -44,14 +44,16 @@ steps:
   displayName: "DotNet test ($(buildConfiguration))"
   inputs:
     command: test
+    projects: '**/*Tests/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+    
 - task: DotNetCoreCLI@2
+  displayName: "DotNet pack"
   inputs:
     command: 'pack'
     packagesToPack: '**/*.csproj'
     nobuild: true
     versioningScheme: 'byBuildNumber'
-    projects: '**/*Tests/*.csproj'
-    arguments: '--configuration $(buildConfiguration) --no-build --no-restore'
 
 - task: DotNetCoreCLI@2
   inputs:
