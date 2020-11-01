@@ -39,6 +39,7 @@ steps:
   inputs:
     command: 'pack'
     nobuild: true
+    packagesToPack: '**/*.fsproj'
     versioningScheme: 'byBuildNumber'
 
 - task: DotNetCoreCLI@2
