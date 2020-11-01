@@ -46,7 +46,7 @@ steps:
   displayName: "DotNet pack ($(buildConfiguration))"
   inputs:
     command: pack
-    arguments: '--packageVersion $(version) --output $(Build.ArtifactStagingDirectory)'
+    arguments: '--packageVersion $(version) --output .'
     zipAfterPublish: True
 
 - task: DotNetCoreCLI@2
