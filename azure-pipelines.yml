@@ -24,12 +24,6 @@ steps:
     version: '5.0.x'
     includePreviewVersions: true # Required for preview versions
 
-- task: UseDotNet@2
-  displayName: "Install .NET 3"
-  inputs:
-    version: '3.0.x'
-    packageType: runtime
-
 - task: DotNetCoreCLI@2
   displayName: "DotNet restore"
   inputs:
