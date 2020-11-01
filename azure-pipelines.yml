@@ -33,25 +33,23 @@ steps:
   displayName: "DotNet build $(buildConfiguration)"
   inputs:
     command: 'build'
-    arguments: '--configuration $(buildConfiguration)'
+    arguments: '--configuration $(buildConfiguration) --no-restore'
   
 - task: DotNetCoreCLI@2
   displayName: "DotNet test ($(buildConfiguration))"
   inputs:
     command: test
     projects: '**/*Tests/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'
+    arguments: '--configuration $(buildConfiguration) --no-build --no-restore'
 
 - task: DotNetCoreCLI@2
   displayName: "DotNet pack ($(buildConfiguration))"
   inputs:
     command: pack
-    arguments: '--packageVersion $(version) --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    arguments: '--packageVersion $(version) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: True
 
-# this code takes all the files in $(Build.ArtifactStagingDirectory) and uploads them as an artifact of your build.
-- task: PublishBuildArtifacts@1
-  displayName: "DotNet publish"
+- task: DotNetCoreCLI@2
+  displayName: "DotNet nuget push"
   inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
-    artifactName: 'RandExp'
+    command: nuget push
