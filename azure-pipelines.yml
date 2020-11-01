@@ -33,7 +33,7 @@ steps:
     vstsFeed: 'my-vsts-feed' # A series of numbers and letters
 
 - task: DotNetCoreCLI@2
-  displayName: "DotNet restore"
+  displayName: "DotNet build $(buildConfiguration)"
   inputs:
     command: 'build'
     arguments: '--configuration $(buildConfiguration)'
