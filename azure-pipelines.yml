@@ -39,16 +39,18 @@ steps:
   displayName: "DotNet test ($(buildConfiguration))"
   inputs:
     command: test
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'pack'
+    packagesToPack: '**/*.csproj'
+    nobuild: true
+    versioningScheme: 'byBuildNumber'
     projects: '**/*Tests/*.csproj'
     arguments: '--configuration $(buildConfiguration) --no-build --no-restore'
 
 - task: DotNetCoreCLI@2
-  displayName: "DotNet pack ($(buildConfiguration))"
   inputs:
-    command: pack
-    arguments: '--packageVersion $(version) --output .'
-
-- task: DotNetCoreCLI@2
-  displayName: "DotNet nuget push"
-  inputs:
-    command: nuget push
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'Public Nuget'
