@@ -38,13 +38,13 @@ steps:
   displayName: "DotNet test ($(buildConfiguration))"
   inputs:
     command: test
-    projects: '**/*Tests/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
     
 - task: DotNetCoreCLI@2
   displayName: "DotNet pack"
   inputs:
     command: 'pack'
+    projects: 'RandExp/RandExp.fsproj'
     nobuild: true
     versioningScheme: 'byBuildNumber'
 
