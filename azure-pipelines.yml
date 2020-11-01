@@ -29,9 +29,6 @@ steps:
   displayName: "DotNet restore"
   inputs:
     command: 'restore'
-    feedsToUse: 'select'
-    vstsFeed: 'my-vsts-feed' # A series of numbers and letters
-
 - task: DotNetCoreCLI@2
   displayName: "DotNet build $(buildConfiguration)"
   inputs:
