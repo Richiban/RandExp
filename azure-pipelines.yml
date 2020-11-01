@@ -1,0 +1,62 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- ci
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  buildConfiguration: "Release"
+  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
+
+steps:
+
+- task: GitVersion@5
+  inputs:
+    runtime: 'core'
+    updateAssemblyInfo: true
+    
+- task: UseDotNet@2
+  displayName: "Install .NET 5"
+  inputs:
+    version: '5.0.x'
+    includePreviewVersions: true # Required for preview versions
+
+- task: DotNetCoreCLI@2
+  displayName: "DotNet restore"
+  inputs:
+    command: 'restore'
+- task: DotNetCoreCLI@2
+  displayName: "DotNet build $(buildConfiguration)"
+  inputs:
+    command: 'build'
+    arguments: '--configuration $(buildConfiguration) --no-restore'
+  
+- task: DotNetCoreCLI@2
+  displayName: "DotNet test ($(buildConfiguration))"
+  inputs:
+    command: test
+    arguments: '--configuration $(buildConfiguration)'
+    
+- task: DotNetCoreCLI@2
+  displayName: "DotNet pack"
+  inputs:
+    command: 'pack'
+    nobuild: true
+    packagesToPack: '**/*.fsproj'
+    versioningScheme: 'byBuildNumber'
+
+- task: DotNetCoreCLI@2
+  displayName: "DotNet push"
+  condition: and(succeeded(), eq(variables.isMain, true))
+  inputs:
+    command: custom
+    custom: nuget
+    arguments: >
+      push $(Build.ArtifactStagingDirectory)/*.nupkg
+      -s $(NuGetSourceServerUrl)
+      -k $(NuGetSourceServerApiKey)
