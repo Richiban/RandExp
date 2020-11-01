@@ -14,35 +14,39 @@ variables:
 
 steps:
 - task: UseDotNet@2
-  name: "InstallNET5"
+  displayName: "Install .NET 5"
   inputs:
     version: '5.0.x'
     includePreviewVersions: true # Required for preview versions
 
 - task: UseDotNet@2
+  displayName: "Install .NET 3"
   inputs:
     version: '3.0.x'
     packageType: runtime
 
 - task: DotNetCoreCLI@2
+  displayName: "DotNet restore"
   inputs:
     command: 'restore'
     feedsToUse: 'select'
     vstsFeed: 'my-vsts-feed' # A series of numbers and letters
 
 - task: DotNetCoreCLI@2
+  displayName: "DotNet restore"
   inputs:
     command: 'build'
     arguments: '--configuration $(buildConfiguration)'
-  displayName: 'dotnet build $(buildConfiguration)'
   
 - task: DotNetCoreCLI@2
+  displayName: "DotNet test ($(buildConfiguration))"
   inputs:
     command: test
     projects: '**/*Tests/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
+  displayName: "DotNet pack ($(buildConfiguration))"
   inputs:
     command: pack
     arguments: '--packageVersion $(version) --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
@@ -50,6 +54,7 @@ steps:
 
 # this code takes all the files in $(Build.ArtifactStagingDirectory) and uploads them as an artifact of your build.
 - task: PublishBuildArtifacts@1
+  displayName: "DotNet publish"
   inputs:
     pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
     artifactName: 'RandExp'
